@@ -149,6 +149,10 @@
       font-weight: 500;
     }
 
+    /* resolved: same bar, main accent instead of error */
+    .notice-fixed { border-left-color: var(--main); }
+    .notice-fixed .notice-icon { background: var(--main); }
+
     /* two columns: vinyl left (50%), controls right (50%), matched heights */
     .layout {
       display: flex;
@@ -933,9 +937,9 @@
 </head>
 <body>
   <div class="card">
-    <div class="notice" id="yt-outage-banner" role="status">
-      <span class="notice-icon" aria-hidden="true">!</span>
-      <span><strong>youtube links are currently down.</strong> saved songs and mp3 uploads still work.</span>
+    <div class="notice notice-fixed" id="yt-outage-banner" role="status">
+      <span class="notice-icon" aria-hidden="true">&check;</span>
+      <span><strong>youtube links are working again.</strong> sorry for the downtime earlier &mdash; paste a link and go.</span>
     </div>
     <div class="layout">
       <div class="vinyl-col">
