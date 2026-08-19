@@ -114,6 +114,41 @@
       max-width: 1080px;
     }
 
+    /* monkeytype-style notice bar: sub-alt panel with an error accent */
+    .notice {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border-left: 4px solid var(--error);
+      background: var(--sub-alt);
+      color: var(--sub);
+      font-size: 0.8125rem;
+      line-height: 1.45;
+    }
+
+    .notice-icon {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--error);
+      color: var(--bg);
+      font-size: 0.75rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .notice strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
     /* two columns: vinyl left (50%), controls right (50%), matched heights */
     .layout {
       display: flex;
@@ -351,8 +386,10 @@
     }
 
     /* pink, matching the stream button */
-    #btn-saved-songs { background: var(--pink); color: var(--text); }
-    #btn-saved-songs:hover { background: var(--pink); color: var(--text); filter: brightness(1.12); }
+    #btn-saved-songs,
+    #btn-saved-songs-desktop { background: var(--pink); color: var(--text); }
+    #btn-saved-songs:hover,
+    #btn-saved-songs-desktop:hover { background: var(--pink); color: var(--text); filter: brightness(1.12); }
 
     .saved-songs-list {
       list-style: none;
@@ -814,6 +851,13 @@
         margin: 0 auto;
       }
 
+      .notice {
+        gap: 10px;
+        margin-bottom: 14px;
+        padding: 10px 12px;
+        font-size: 0.75rem;
+      }
+
       html:not(.mobile-scroll-open) .card {
         height: calc(100svh - 32px);
         overflow: hidden;
@@ -858,6 +902,10 @@
         display: flex;
       }
 
+      #btn-saved-songs-desktop {
+        display: none;
+      }
+
       .slider-section {
         margin-top: 14px;
         padding: 18px 16px;
@@ -885,6 +933,10 @@
 </head>
 <body>
   <div class="card">
+    <div class="notice" id="yt-outage-banner" role="status">
+      <span class="notice-icon" aria-hidden="true">!</span>
+      <span><strong>youtube links are currently down.</strong> saved songs and mp3 uploads still work.</span>
+    </div>
     <div class="layout">
       <div class="vinyl-col">
         <div class="vinyl-player">
@@ -930,6 +982,7 @@
             <button id="btn-saved-songs" onclick="toggle_saved_songs()">saved songs</button>
             <label class="mobile-file-button" id="btn-choose-mp3" for="file-input" role="button" tabindex="0">choose mp3</label>
           </div>
+          <button id="btn-saved-songs-desktop" onclick="toggle_saved_songs()">saved songs</button>
           <ul class="saved-songs-list" id="saved-songs-list" aria-label="saved songs" hidden></ul>
           <button id="btn-clear-songs" onclick="clear_saved_songs()" hidden>clear saved songs</button>
         </div>
