@@ -54,7 +54,6 @@ var panControl = document.querySelector('#pan-control');
 var panValue = document.querySelector('#pan-value');
 var panSection = document.querySelector('#pan-section');
 var btn8d = document.querySelector('#btn-8d');
-var btn8dFast = document.querySelector('#btn-8d-fast');
 var eightdSpeed = document.querySelector('#eightd-speed');
 var eightdPeriodControl = document.querySelector('#eightd-period-control');
 var eightdPeriodValue = document.querySelector('#eightd-period-value');
@@ -367,11 +366,6 @@ function updateEightDUI() {
     btn8d.classList.toggle('active', eightDEnabled);
     btn8d.setAttribute('aria-pressed', eightDEnabled ? 'true' : 'false');
   }
-  if (btn8dFast) {
-    btn8dFast.textContent = eightDEnabled ? '8D on' : '8D off';
-    btn8dFast.classList.toggle('active', eightDEnabled);
-    btn8dFast.setAttribute('aria-pressed', eightDEnabled ? 'true' : 'false');
-  }
   if (eightdSpeed) eightdSpeed.hidden = !eightDEnabled;
   if (panControl) panControl.disabled = eightDEnabled;
   if (panSection) panSection.classList.toggle('disabled', eightDEnabled);
@@ -392,29 +386,6 @@ window.toggle_8d = function () {
     applyPan(panControl ? parseInt(panControl.value, 10) / 100 : 0);
   }
   routeOutput();
-};
-
-// dj screw: slow pitch + reverb + heavy bass. just drives the existing
-// sliders so all their wiring (audio nodes + labels) runs unchanged.
-function setSlider(el, v) {
-  if (!el) return;
-  el.value = v;
-  el.dispatchEvent(new Event('input', { bubbles: true }));
-}
-window.dj_screw_preset = function () {
-  setSlider(playbackControl, 0.80);  // ponytail: screwed-tape feel; tune to taste
-  setSlider(reverbMixControl, 35);
-  setSlider(bassControl, 6);
-};
-
-window.eightd_fast_preset = function () {
-  if (eightDEnabled) {
-    window.toggle_8d();
-    return;
-  }
-
-  setSlider(eightdPeriodControl, 2);
-  window.toggle_8d();
 };
 
 window.toggle_advanced = function () {
@@ -1005,19 +976,6 @@ function loadSavedTrack(saved) {
   return loadTrack(file, saved.sourceUrl || '');
 }
 
-// paste the copied link into the field and start a download
-window.paste_and_download = async function () {
-  try {
-    var text = await navigator.clipboard.readText();
-    if (text && youtubeUrlInput) youtubeUrlInput.value = text.trim();
-    updateMobileYoutubeAction();
-  } catch (e) {
-    setMobileStatus('clipboard blocked — paste the link manually.', 'error');
-    return;
-  }
-  window.download_youtube(true);
-};
-
 function scheduleYoutubePasteDownload() {
   clearTimeout(youtubePasteDownloadTimer);
   youtubePasteDownloadTimer = setTimeout(function () {
@@ -1113,6 +1071,7 @@ window.download_youtube = async function (blurOnValidUrl) {
     var file = fileFromDownload(blob, response);
     setMobileStatus('saving locally…', 'streaming');
     await saveYoutubeTrack(file, sourceUrl);
+    renderSavedSongs();
     throwIfYoutubeCanceled();
     await loadTrack(file, sourceUrl);
     setMobileStatus('saved — press play.', 'ready');
@@ -1136,17 +1095,12 @@ window.cancel_youtube_download = function () {
   setMobileStatus('canceling download…', '');
 };
 
-function hideSavedSongs() {
-  if (savedSongsList) savedSongsList.hidden = true;
-  if (clearSongsBtn) clearSongsBtn.hidden = true;
-}
-
-window.toggle_saved_songs = async function () {
+// always-visible list of saved songs, newest first
+async function renderSavedSongs() {
   if (!savedSongsList) return;
-  if (!savedSongsList.hidden) { hideSavedSongs(); return; }
-  savedSongsList.textContent = '';
   var rows;
   try { rows = await listSavedYoutubeTracks(); } catch (e) { rows = []; }
+  savedSongsList.textContent = '';
   if (!rows.length) {
     var empty = document.createElement('li');
     empty.className = 'empty';
@@ -1158,7 +1112,6 @@ window.toggle_saved_songs = async function () {
       li.textContent = row.name || row.sourceUrl || 'untitled';
       li.title = row.sourceUrl || '';
       li.addEventListener('click', function () {
-        hideSavedSongs();
         loadSavedTrack(row).then(function () {
           setMobileStatus('ready — press play.', 'ready');
         });
@@ -1166,15 +1119,13 @@ window.toggle_saved_songs = async function () {
       savedSongsList.appendChild(li);
     });
   }
-  savedSongsList.hidden = false;
   if (clearSongsBtn) clearSongsBtn.hidden = !rows.length;   // only when there are songs to clear
-};
+}
 
 window.clear_saved_songs = async function () {
   try {
     await clearSavedYoutubeTracks();
-    if (savedSongsList) savedSongsList.textContent = '';
-    hideSavedSongs();
+    renderSavedSongs();
     setMobileStatus('cleared saved songs.', 'ready');
   } catch (e) {
     setMobileStatus('could not clear saved songs.', 'error');
@@ -1756,6 +1707,7 @@ if (isMobileViewport()) {
   ensureAudio();
 }
 restoreSavedYoutubeTrack();
+renderSavedSongs();
 startViz();   // perpetual: draws the sample waveform while idle, real data once loaded
 
 // friendly control name from the id: btn-play -> "play", playback-rate-control -> "playback-rate"
