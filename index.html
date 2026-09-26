@@ -349,7 +349,7 @@
     #btn-youtube-download { display: none; }
 
     .mobile-btn-row {
-      display: none;   /* saved-songs / choose-mp3 are mobile-only; desktop has its own controls */
+      display: none;   /* choose-mp3 is mobile-only; desktop has its own controls */
       gap: 10px;
     }
 
@@ -390,10 +390,8 @@
     }
 
     /* pink, matching the stream button */
-    #btn-saved-songs,
-    #btn-saved-songs-desktop { background: var(--pink); color: var(--text); }
-    #btn-saved-songs:hover,
-    #btn-saved-songs-desktop:hover { background: var(--pink); color: var(--text); filter: brightness(1.12); }
+    #btn-saved-songs { background: var(--pink); color: var(--text); }
+    #btn-saved-songs:hover { background: var(--pink); color: var(--text); filter: brightness(1.12); }
 
     .saved-songs-list {
       list-style: none;
@@ -906,10 +904,6 @@
         display: flex;
       }
 
-      #btn-saved-songs-desktop {
-        display: none;
-      }
-
       .slider-section {
         margin-top: 14px;
         padding: 18px 16px;
@@ -981,14 +975,13 @@
             </button>
           </div>
           <button id="btn-youtube-download" onclick="download_youtube()">play</button>
-          <button class="mobile-options-toggle" id="btn-mobile-more-options" onclick="toggle_mobile_more_options()" aria-expanded="false" aria-controls="mobile-more-options">more options &#9662;</button>
-          <div class="mobile-btn-row" id="mobile-more-options" hidden>
-            <button id="btn-saved-songs" onclick="toggle_saved_songs()">saved songs</button>
-            <label class="mobile-file-button" id="btn-choose-mp3" for="file-input" role="button" tabindex="0">choose mp3</label>
-          </div>
-          <button id="btn-saved-songs-desktop" onclick="toggle_saved_songs()">saved songs</button>
+          <button id="btn-saved-songs" onclick="toggle_saved_songs()" aria-controls="saved-songs-list">saved songs</button>
           <ul class="saved-songs-list" id="saved-songs-list" aria-label="saved songs" hidden></ul>
           <button id="btn-clear-songs" onclick="clear_saved_songs()" hidden>clear saved songs</button>
+          <button class="mobile-options-toggle" id="btn-mobile-more-options" onclick="toggle_mobile_more_options()" aria-expanded="false" aria-controls="mobile-more-options">more options &#9662;</button>
+          <div class="mobile-btn-row" id="mobile-more-options" hidden>
+            <label class="mobile-file-button" id="btn-choose-mp3" for="file-input" role="button" tabindex="0">choose mp3</label>
+          </div>
         </div>
 
         <div class="slider-section slider-rate">

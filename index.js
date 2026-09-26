@@ -963,7 +963,6 @@ function setMobileMoreOptionsOpen(open) {
     mobileMoreOptionsBtn.textContent = open ? 'fewer options ▴' : 'more options ▾';
     mobileMoreOptionsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
-  if (!open) hideSavedSongs();
   try {
     localStorage.setItem(MOBILE_MORE_OPTIONS_KEY, open ? 'true' : 'false');
   } catch (e) {}
