@@ -79,8 +79,6 @@ var mobileMoreOptions = document.querySelector('#mobile-more-options');
 var mobileChooseMp3 = document.querySelector('#btn-choose-mp3');
 var savedSongsList = document.querySelector('#saved-songs-list');
 var clearSongsBtn = document.querySelector('#btn-clear-songs');
-var savedSongsSidebar = document.querySelector('#saved-songs-sidebar');
-var clearSongsSidebarBtn = document.querySelector('#btn-clear-songs-sidebar');
 
 var YOUTUBE_DOWNLOAD_ENDPOINT = 'https://jerryzhou.ca/ytdlp/download';
 var YOUTUBE_DB_NAME = 'slowedrvb-local-media';
@@ -1073,7 +1071,7 @@ window.download_youtube = async function (blurOnValidUrl) {
     var file = fileFromDownload(blob, response);
     setMobileStatus('saving locally…', 'streaming');
     await saveYoutubeTrack(file, sourceUrl);
-    refreshSavedSongsSidebar();
+    renderSavedSongs();
     throwIfYoutubeCanceled();
     await loadTrack(file, sourceUrl);
     setMobileStatus('saved — press play.', 'ready');
@@ -1097,61 +1095,37 @@ window.cancel_youtube_download = function () {
   setMobileStatus('canceling download…', '');
 };
 
-function hideSavedSongs() {
-  if (savedSongsList) savedSongsList.hidden = true;
-  if (clearSongsBtn) clearSongsBtn.hidden = true;
-}
-
-async function readSavedSongs() {
-  try { return await listSavedYoutubeTracks(); } catch (e) { return []; }
-}
-
-// fills a saved-songs <ul>; onPick runs before the clicked track loads
-function renderSavedSongs(listEl, rows, onPick) {
-  listEl.textContent = '';
+// always-visible list of saved songs, newest first
+async function renderSavedSongs() {
+  if (!savedSongsList) return;
+  var rows;
+  try { rows = await listSavedYoutubeTracks(); } catch (e) { rows = []; }
+  savedSongsList.textContent = '';
   if (!rows.length) {
     var empty = document.createElement('li');
     empty.className = 'empty';
     empty.textContent = 'no saved songs yet.';
-    listEl.appendChild(empty);
-    return;
-  }
-  rows.forEach(function (row) {
-    var li = document.createElement('li');
-    li.textContent = row.name || row.sourceUrl || 'untitled';
-    li.title = row.sourceUrl || '';
-    li.addEventListener('click', function () {
-      if (onPick) onPick();
-      loadSavedTrack(row).then(function () {
-        setMobileStatus('ready — press play.', 'ready');
+    savedSongsList.appendChild(empty);
+  } else {
+    rows.forEach(function (row) {
+      var li = document.createElement('li');
+      li.textContent = row.name || row.sourceUrl || 'untitled';
+      li.title = row.sourceUrl || '';
+      li.addEventListener('click', function () {
+        loadSavedTrack(row).then(function () {
+          setMobileStatus('ready — press play.', 'ready');
+        });
       });
+      savedSongsList.appendChild(li);
     });
-    listEl.appendChild(li);
-  });
-}
-
-async function refreshSavedSongsSidebar() {
-  if (!savedSongsSidebar) return;
-  var rows = await readSavedSongs();
-  renderSavedSongs(savedSongsSidebar, rows);
-  if (clearSongsSidebarBtn) clearSongsSidebarBtn.hidden = !rows.length;
-}
-
-window.toggle_saved_songs = async function () {
-  if (!savedSongsList) return;
-  if (!savedSongsList.hidden) { hideSavedSongs(); return; }
-  var rows = await readSavedSongs();
-  renderSavedSongs(savedSongsList, rows, hideSavedSongs);
-  savedSongsList.hidden = false;
+  }
   if (clearSongsBtn) clearSongsBtn.hidden = !rows.length;   // only when there are songs to clear
-};
+}
 
 window.clear_saved_songs = async function () {
   try {
     await clearSavedYoutubeTracks();
-    if (savedSongsList) savedSongsList.textContent = '';
-    hideSavedSongs();
-    refreshSavedSongsSidebar();
+    renderSavedSongs();
     setMobileStatus('cleared saved songs.', 'ready');
   } catch (e) {
     setMobileStatus('could not clear saved songs.', 'error');
@@ -1733,7 +1707,7 @@ if (isMobileViewport()) {
   ensureAudio();
 }
 restoreSavedYoutubeTrack();
-refreshSavedSongsSidebar();
+renderSavedSongs();
 startViz();   // perpetual: draws the sample waveform while idle, real data once loaded
 
 // friendly control name from the id: btn-play -> "play", playback-rate-control -> "playback-rate"

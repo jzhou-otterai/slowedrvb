@@ -93,9 +93,8 @@
     .vinyl-col > *:nth-child(8), .controls-col > *:nth-child(8) { animation-delay: 0.20s; }
     .vinyl-col > *:nth-child(9), .controls-col > *:nth-child(9) { animation-delay: 0.225s; }
     .vinyl-col > *:nth-child(10), .controls-col > *:nth-child(10) { animation-delay: 0.25s; }
-    .saved-col { opacity: 0; animation: fadeIn 0.2s ease 0.1s forwards; }
     @media (prefers-reduced-motion: reduce) {
-      .vinyl-col > *, .controls-col > *, .saved-col { opacity: 1; animation: none; }
+      .vinyl-col > *, .controls-col > * { opacity: 1; animation: none; }
     }
 
     body {
@@ -134,48 +133,6 @@
     .controls-col {
       flex: 1 1 50%;
       min-width: 0;
-    }
-
-    /* saved songs sidebar: always open on wide screens, the toggle button covers the rest */
-    .saved-col {
-      display: none;
-      flex: 0 0 220px;
-      position: relative;
-    }
-
-    /* absolute so a long list scrolls instead of stretching the row */
-    .saved-col-inner {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .saved-col-title {
-      font-size: 0.75rem;
-      color: var(--sub);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .saved-col .saved-songs-list {
-      flex: 1 1 auto;
-      max-height: none;
-      margin-top: 6px;
-    }
-
-    .saved-col .saved-clear {
-      flex: 0 0 auto;
-      margin-top: 10px;
-    }
-    .saved-col .saved-clear:hover { background: var(--sub-alt); color: var(--error); }
-
-    @media (min-width: 1100px) {
-      .card { max-width: 1340px; }
-      .saved-col { display: block; }
-      #btn-saved-songs,
-      #saved-songs-list,
-      #btn-clear-songs { display: none; }
     }
 
     @media (max-width: 760px) {
@@ -378,10 +335,6 @@
       opacity: 0;
       overflow: hidden;
     }
-
-    /* pink, matching the stream button */
-    #btn-saved-songs { background: var(--pink); color: var(--text); }
-    #btn-saved-songs:hover { background: var(--pink); color: var(--text); filter: brightness(1.12); }
 
     .saved-songs-list {
       list-style: none;
@@ -835,6 +788,11 @@
         width: 100%;
       }
 
+      /* the mobile card doesn't scroll, so keep the always-open list short (~2.5 rows) */
+      .saved-songs-list {
+        max-height: 116px;
+      }
+
       .vinyl-col > *,
       .controls-col > * {
         opacity: 1;
@@ -914,8 +872,7 @@
             <input class="mobile-field" id="youtube-url-input" type="url" inputmode="url" autocomplete="url" placeholder="youtube url" aria-label="youtube url">
           </div>
           <button id="btn-youtube-download" onclick="download_youtube()">play</button>
-          <button id="btn-saved-songs" onclick="toggle_saved_songs()" aria-controls="saved-songs-list">saved songs</button>
-          <ul class="saved-songs-list" id="saved-songs-list" aria-label="saved songs" hidden></ul>
+          <ul class="saved-songs-list" id="saved-songs-list" aria-label="saved songs"></ul>
           <button id="btn-clear-songs" onclick="clear_saved_songs()" hidden>clear saved songs</button>
           <button class="mobile-options-toggle" id="btn-mobile-more-options" onclick="toggle_mobile_more_options()" aria-expanded="false" aria-controls="mobile-more-options">more options &#9662;</button>
           <div class="mobile-btn-row" id="mobile-more-options" hidden>
@@ -1018,14 +975,6 @@
         </div>
 
       </div>
-
-      <aside class="saved-col" aria-labelledby="saved-col-title">
-        <div class="saved-col-inner">
-          <div class="saved-col-title" id="saved-col-title">saved songs</div>
-          <ul class="saved-songs-list" id="saved-songs-sidebar"></ul>
-          <button class="saved-clear" id="btn-clear-songs-sidebar" onclick="clear_saved_songs()" hidden>clear saved songs</button>
-        </div>
-      </aside>
     </div>
   </div>
 
