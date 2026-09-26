@@ -976,19 +976,6 @@ function loadSavedTrack(saved) {
   return loadTrack(file, saved.sourceUrl || '');
 }
 
-// paste the copied link into the field and start a download
-window.paste_and_download = async function () {
-  try {
-    var text = await navigator.clipboard.readText();
-    if (text && youtubeUrlInput) youtubeUrlInput.value = text.trim();
-    updateMobileYoutubeAction();
-  } catch (e) {
-    setMobileStatus('clipboard blocked — paste the link manually.', 'error');
-    return;
-  }
-  window.download_youtube(true);
-};
-
 function scheduleYoutubePasteDownload() {
   clearTimeout(youtubePasteDownloadTimer);
   youtubePasteDownloadTimer = setTimeout(function () {

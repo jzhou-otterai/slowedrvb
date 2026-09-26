@@ -291,20 +291,6 @@
       cursor: pointer;
     }
 
-    #btn-yt-paste {
-      flex: 0 0 10%;
-      min-width: 44px;
-      margin-top: 0;
-      padding-left: 0;
-      padding-right: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--sub-alt);
-      color: var(--sub);
-    }
-    #btn-yt-paste:hover { background: var(--sub-alt); color: var(--text); }
-
     #btn-clear-songs { background: var(--sub-alt); color: var(--sub); }
     #btn-clear-songs:hover { background: var(--sub-alt); color: var(--error); }
     #btn-youtube-download { display: none; }
@@ -883,12 +869,6 @@
           </div>
           <div class="youtube-url-row">
             <input class="mobile-field" id="youtube-url-input" type="url" inputmode="url" autocomplete="url" placeholder="youtube url" aria-label="youtube url">
-            <button id="btn-yt-paste" onclick="paste_and_download()" title="paste link &amp; download" aria-label="paste link and download">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="8" y="2" width="8" height="4" rx="1"></rect>
-                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-              </svg>
-            </button>
           </div>
           <button id="btn-youtube-download" onclick="download_youtube()">play</button>
           <button id="btn-saved-songs" onclick="toggle_saved_songs()" aria-controls="saved-songs-list">saved songs</button>
