@@ -1071,7 +1071,6 @@ window.download_youtube = async function (blurOnValidUrl) {
     var file = fileFromDownload(blob, response);
     setMobileStatus('saving locally…', 'streaming');
     await saveYoutubeTrack(file, sourceUrl);
-    renderSavedSongs();
     throwIfYoutubeCanceled();
     await loadTrack(file, sourceUrl);
     setMobileStatus('saved — press play.', 'ready');
@@ -1095,12 +1094,17 @@ window.cancel_youtube_download = function () {
   setMobileStatus('canceling download…', '');
 };
 
-// always-visible list of saved songs, newest first
-async function renderSavedSongs() {
+function hideSavedSongs() {
+  if (savedSongsList) savedSongsList.hidden = true;
+  if (clearSongsBtn) clearSongsBtn.hidden = true;
+}
+
+window.toggle_saved_songs = async function () {
   if (!savedSongsList) return;
+  if (!savedSongsList.hidden) { hideSavedSongs(); return; }
+  savedSongsList.textContent = '';
   var rows;
   try { rows = await listSavedYoutubeTracks(); } catch (e) { rows = []; }
-  savedSongsList.textContent = '';
   if (!rows.length) {
     var empty = document.createElement('li');
     empty.className = 'empty';
@@ -1112,6 +1116,7 @@ async function renderSavedSongs() {
       li.textContent = row.name || row.sourceUrl || 'untitled';
       li.title = row.sourceUrl || '';
       li.addEventListener('click', function () {
+        hideSavedSongs();
         loadSavedTrack(row).then(function () {
           setMobileStatus('ready — press play.', 'ready');
         });
@@ -1119,13 +1124,15 @@ async function renderSavedSongs() {
       savedSongsList.appendChild(li);
     });
   }
+  savedSongsList.hidden = false;
   if (clearSongsBtn) clearSongsBtn.hidden = !rows.length;   // only when there are songs to clear
-}
+};
 
 window.clear_saved_songs = async function () {
   try {
     await clearSavedYoutubeTracks();
-    renderSavedSongs();
+    if (savedSongsList) savedSongsList.textContent = '';
+    hideSavedSongs();
     setMobileStatus('cleared saved songs.', 'ready');
   } catch (e) {
     setMobileStatus('could not clear saved songs.', 'error');
@@ -1707,7 +1714,6 @@ if (isMobileViewport()) {
   ensureAudio();
 }
 restoreSavedYoutubeTrack();
-renderSavedSongs();
 startViz();   // perpetual: draws the sample waveform while idle, real data once loaded
 
 // friendly control name from the id: btn-play -> "play", playback-rate-control -> "playback-rate"

@@ -336,6 +336,10 @@
       overflow: hidden;
     }
 
+    /* pink, matching the stream button */
+    #btn-saved-songs { background: var(--pink); color: var(--text); }
+    #btn-saved-songs:hover { background: var(--pink); color: var(--text); filter: brightness(1.12); }
+
     .saved-songs-list {
       list-style: none;
       margin: 10px 0 0;
@@ -788,11 +792,6 @@
         width: 100%;
       }
 
-      /* the mobile card doesn't scroll, so keep the always-open list short (~2.5 rows) */
-      .saved-songs-list {
-        max-height: 116px;
-      }
-
       .vinyl-col > *,
       .controls-col > * {
         opacity: 1;
@@ -872,7 +871,8 @@
             <input class="mobile-field" id="youtube-url-input" type="url" inputmode="url" autocomplete="url" placeholder="youtube url" aria-label="youtube url">
           </div>
           <button id="btn-youtube-download" onclick="download_youtube()">play</button>
-          <ul class="saved-songs-list" id="saved-songs-list" aria-label="saved songs"></ul>
+          <button id="btn-saved-songs" onclick="toggle_saved_songs()" aria-controls="saved-songs-list">saved songs</button>
+          <ul class="saved-songs-list" id="saved-songs-list" aria-label="saved songs" hidden></ul>
           <button id="btn-clear-songs" onclick="clear_saved_songs()" hidden>clear saved songs</button>
           <button class="mobile-options-toggle" id="btn-mobile-more-options" onclick="toggle_mobile_more_options()" aria-expanded="false" aria-controls="mobile-more-options">more options &#9662;</button>
           <div class="mobile-btn-row" id="mobile-more-options" hidden>
