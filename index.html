@@ -396,40 +396,6 @@
     }
     .advanced-toggle:hover { background: var(--sub-alt); color: var(--text); }
 
-    .preset-row {
-      display: flex;
-      gap: 10px;
-      align-items: stretch;
-      margin-top: 12px;
-      margin-bottom: 16px;
-    }
-
-    .preset-btn {
-      display: block;
-      flex: 1 1 auto;
-      min-width: 0;
-      margin: 0;
-      background: var(--sub-alt);
-      color: var(--sub);
-      letter-spacing: 0.06em;
-      font-weight: 600;
-    }
-    .preset-btn:hover { background: var(--sub-alt); color: var(--sub); filter: brightness(1.3); }
-
-    .preset-btn.active,
-    .preset-btn.active:hover {
-      background: var(--main);
-      color: var(--bg);
-      filter: none;
-    }
-
-    .preset-btn-compact {
-      flex: 0 0 20%;
-      padding-left: 0;
-      padding-right: 0;
-      white-space: nowrap;
-    }
-
     .toggle-row {
       display: flex;
       justify-content: space-between;
@@ -971,11 +937,6 @@
             <span>+7.5dB</span>
             <span>+15dB</span>
           </div>
-        </div>
-
-        <div class="preset-row">
-          <button class="preset-btn" id="btn-dj-screw" onclick="dj_screw_preset()">screw and chop</button>
-          <button class="preset-btn preset-btn-compact" id="btn-8d-fast" onclick="eightd_fast_preset()" aria-pressed="false">8D off</button>
         </div>
 
         <button class="advanced-toggle" id="btn-advanced" onclick="toggle_advanced()" aria-expanded="false">show advanced &#9662;</button>

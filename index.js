@@ -54,7 +54,6 @@ var panControl = document.querySelector('#pan-control');
 var panValue = document.querySelector('#pan-value');
 var panSection = document.querySelector('#pan-section');
 var btn8d = document.querySelector('#btn-8d');
-var btn8dFast = document.querySelector('#btn-8d-fast');
 var eightdSpeed = document.querySelector('#eightd-speed');
 var eightdPeriodControl = document.querySelector('#eightd-period-control');
 var eightdPeriodValue = document.querySelector('#eightd-period-value');
@@ -367,11 +366,6 @@ function updateEightDUI() {
     btn8d.classList.toggle('active', eightDEnabled);
     btn8d.setAttribute('aria-pressed', eightDEnabled ? 'true' : 'false');
   }
-  if (btn8dFast) {
-    btn8dFast.textContent = eightDEnabled ? '8D on' : '8D off';
-    btn8dFast.classList.toggle('active', eightDEnabled);
-    btn8dFast.setAttribute('aria-pressed', eightDEnabled ? 'true' : 'false');
-  }
   if (eightdSpeed) eightdSpeed.hidden = !eightDEnabled;
   if (panControl) panControl.disabled = eightDEnabled;
   if (panSection) panSection.classList.toggle('disabled', eightDEnabled);
@@ -392,29 +386,6 @@ window.toggle_8d = function () {
     applyPan(panControl ? parseInt(panControl.value, 10) / 100 : 0);
   }
   routeOutput();
-};
-
-// dj screw: slow pitch + reverb + heavy bass. just drives the existing
-// sliders so all their wiring (audio nodes + labels) runs unchanged.
-function setSlider(el, v) {
-  if (!el) return;
-  el.value = v;
-  el.dispatchEvent(new Event('input', { bubbles: true }));
-}
-window.dj_screw_preset = function () {
-  setSlider(playbackControl, 0.80);  // ponytail: screwed-tape feel; tune to taste
-  setSlider(reverbMixControl, 35);
-  setSlider(bassControl, 6);
-};
-
-window.eightd_fast_preset = function () {
-  if (eightDEnabled) {
-    window.toggle_8d();
-    return;
-  }
-
-  setSlider(eightdPeriodControl, 2);
-  window.toggle_8d();
 };
 
 window.toggle_advanced = function () {
