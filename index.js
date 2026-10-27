@@ -1010,15 +1010,10 @@ window.download_youtube = async function (blurOnValidUrl) {
     return;
   }
 
-  if (blurOnValidUrl && youtubeUrlInput) youtubeUrlInput.blur();
-
-  if (mobilePrimaryActionPlaysLoadedTrack()) {
-    window.toggle_play();
-    updateMobileYoutubeAction();
-    return;
-  }
-
+  // mark in flight before blurring: blur() fires the input's blur handler synchronously,
+  // which would otherwise start a second, identical download.
   setYoutubeFetching(true);
+  if (blurOnValidUrl && youtubeUrlInput) youtubeUrlInput.blur();
   youtubeDownloadCanceled = false;
   youtubeDownloadController = typeof AbortController !== 'undefined' ? new AbortController() : null;
 
