@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/((?!api/|privacy|ads\\.txt|favicon\\.svg).*)",
+      "destination": "https://chromewebstore.google.com/detail/fllljfakaaapihnnjfblfhfodcpnefpa",
+      "permanent": false
+    }
+  ]
+}
